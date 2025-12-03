@@ -102,11 +102,15 @@ function App() {
   // iPhone Portrait Detection (empfehle Querformat!)
   useEffect(() => {
     const checkOrientation = () => {
-      const isPortrait = window.innerWidth < window.innerHeight
-      const isMobile = window.innerWidth < 768
-      const isIPhone = /iPhone|iPad|iPod/.test(navigator.userAgent)
+      const screenWidth = window.innerWidth
+      const screenHeight = window.innerHeight
+      const isPortrait = screenWidth < screenHeight
+      const isSmallScreen = screenWidth < 500 && screenHeight < 1000
+      const isIPhone = /iPhone/.test(navigator.userAgent)
+      const isTouchDevice = 'ontouchstart' in window
       
-      if (isPortrait && isMobile && isIPhone) {
+      // NUR echtes iPhone im Portrait mit kleinem Screen
+      if (isPortrait && isSmallScreen && isIPhone && isTouchDevice) {
         setShowLandscapeWarning(true)
       } else {
         setShowLandscapeWarning(false)
