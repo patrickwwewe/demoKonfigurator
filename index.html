@@ -59,7 +59,7 @@
         <div class="spinner"></div>
         <div class="loading">Türkonfigurator wird geladen...</div>
         <p>Sie werden automatisch weitergeleitet.</p>
-        <a href="./frontend/dist/index.html" class="manual-link">
+        <a href="./frontend/index.html" class="manual-link">
             🚪 Direkt zum Türkonfigurator
         </a>
         <p style="font-size: 0.9rem; margin-top: 2rem; opacity: 0.8;">
@@ -69,24 +69,30 @@
     </div>
     
     <script>
-        // Automatische Weiterleitung nach 2 Sekunden
-        setTimeout(() => {
-            window.location.href = './frontend/dist/index.html';
-        }, 2000);
+        // Edge-kompatible Weiterleitung
+        function redirectToApp() {
+            try {
+                // Versuche verschiedene Pfade für maximale Kompatibilität
+                const paths = [
+                    './frontend/index.html',
+                    '/demoKonfigurator/frontend/index.html',
+                    'frontend/index.html'
+                ];
+                
+                // Direkte Weiterleitung für Edge
+                window.location.href = './frontend/index.html';
+            } catch (error) {
+                console.log('Redirect error:', error);
+            }
+        }
         
-        // Fallback: Prüfe ob die Ziel-Seite existiert
-        fetch('./frontend/dist/index.html')
-            .then(response => {
-                if (response.ok) {
-                    setTimeout(() => {
-                        window.location.href = './frontend/dist/index.html';
-                    }, 1000);
-                }
-            })
-            .catch(() => {
-                document.querySelector('.loading').textContent = 'Türkonfigurator wird noch erstellt...';
-                document.querySelector('.container p').textContent = 'Bitte versuchen Sie es in wenigen Minuten erneut.';
-            });
+        // Sofortige Weiterleitung für Edge
+        setTimeout(redirectToApp, 1500);
+        
+        // Fallback für ältere Browser
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(redirectToApp, 2000);
+        });
     </script>
 </body>
 </html>
