@@ -177,7 +177,11 @@ function App() {
             dpr={[1, 2]}
             gl={{ antialias: true }}
             style={{ 
-              minHeight: window.innerWidth < 768 ? '350px' : '400px',
+              minHeight: (() => {
+                const isMobileLandscape = window.innerWidth > window.innerHeight && window.innerWidth < 1000
+                if (isMobileLandscape) return '100vh'  // iPhone Querformat: volle Höhe
+                return window.innerWidth < 768 ? '350px' : '400px'  // Sonst wie vorher
+              })(),
               touchAction: 'none'
             }}
           >

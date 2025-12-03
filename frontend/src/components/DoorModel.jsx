@@ -11,6 +11,7 @@ export default function DoorModel({ door, options }) {
   useEffect(() => {
     if (camera && size) {
       const aspect = size.width / size.height
+      const isMobileLandscape = aspect > 1.5 && size.width < 1000
       
       // Passe FOV basierend auf Aspect Ratio an
       if (aspect < 1) {
@@ -26,9 +27,21 @@ export default function DoorModel({ door, options }) {
       
       camera.updateProjectionMatrix()
       
-      // Passe Kamera-Position an
-      const distance = aspect < 1 ? 7 : 5.5
-      camera.position.set(distance * 0.8, distance * 0.6, distance)
+      // Optimierte Kamera-Position für iPhone Querformat
+      if (isMobileLandscape) {
+        // iPhone Querformat: Tür zentrieren
+        const distance = 5.5
+        camera.position.set(distance * 0.8, distance * 0.2, distance)  // Y viel niedriger!
+        camera.lookAt(0, 0, 0)  // Direkt zur Türmitte schauen
+      } else if (aspect < 1) {
+        // Portrait
+        const distance = 7
+        camera.position.set(distance * 0.8, distance * 0.6, distance)
+      } else {
+        // Desktop
+        const distance = 5.5
+        camera.position.set(distance * 0.8, distance * 0.4, distance)
+      }
     }
   }, [camera, size])
   
