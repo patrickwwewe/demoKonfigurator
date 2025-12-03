@@ -1,0 +1,229 @@
+{
+  "doors": [
+    {
+      "id": "classic-wood-001",
+      "name": "Klassik Holztür",
+      "basePrice": 1200,
+      "material": "Holz",
+      "width": 90,
+      "height": 210,
+      "category": "classic",
+      "description": "Traditionelle Holztür mit natürlicher Maserung",
+      "compatibleOptions": ["glass-panel", "custom-color", "extra-insulation", "weather-seal", "peephole", "door-chain", "mail-slot", "cylinder-lock", "deadbolt", "threshold-seal", "sound-insulation", "frosted-glass", "tinted-glass"]
+    },
+    {
+      "id": "classic-wood-002",
+      "name": "Landhaus Eichentür", 
+      "basePrice": 1650,
+      "material": "Eiche",
+      "width": 100,
+      "height": 210,
+      "category": "classic",
+      "description": "Robuste Eichentür im Landhausstil",
+      "compatibleOptions": ["glass-panel", "custom-color", "extra-insulation", "weather-seal", "decorative-glass", "peephole", "door-chain", "mail-slot", "cylinder-lock", "handle-lock", "door-closer", "cat-flap", "threshold-seal", "sound-insulation"]
+    },
+    {
+      "id": "modern-alu-001",
+      "name": "Modern Aluminium",
+      "basePrice": 1800,
+      "material": "Aluminium",
+      "width": 100,
+      "height": 220,
+      "category": "modern",
+      "description": "Schlankes Design mit klaren Linien",
+      "compatibleOptions": ["smart-lock", "glass-panel", "custom-color", "led-lighting", "fingerprint", "video-doorbell", "intercom-system", "motion-sensor", "keypad-entry", "app-control", "backup-battery", "anti-fog-coating", "heated-glass", "privacy-glass", "mirror-finish"]
+    },
+    {
+      "id": "modern-alu-002",
+      "name": "Designer Aluminium Plus",
+      "basePrice": 2400,
+      "material": "Aluminium",
+      "width": 110,
+      "height": 230,
+      "category": "modern",
+      "description": "Premium Designertür mit großflächigem Glas",
+      "compatibleOptions": ["smart-lock", "glass-panel", "custom-color", "led-lighting", "fingerprint", "decorative-glass", "video-doorbell", "intercom-system", "motion-sensor", "automatic-opener", "keypad-entry", "rfid-access", "app-control", "backup-battery", "smart-glass", "heated-glass", "self-cleaning-glass", "uv-protection"]
+    },
+    {
+      "id": "security-steel-001",
+      "name": "Sicherheitstür RC2",
+      "basePrice": 2500,
+      "material": "Stahl",
+      "width": 90,
+      "height": 210,
+      "category": "security",
+      "description": "Einbruchschutz Klasse RC2",
+      "compatibleOptions": ["security-lock", "smart-lock", "extra-insulation", "security-glass", "multi-point-lock", "video-doorbell", "motion-sensor", "keypad-entry", "rfid-access", "magnetic-lock", "anti-drill-protection", "reinforced-hinges", "fire-protection", "alarm-system", "glass-break-sensor", "bulletproof-glass"]
+    },
+    {
+      "id": "security-steel-002",
+      "name": "Panzer Sicherheitstür RC3",
+      "basePrice": 3200,
+      "material": "Panzerstahl",
+      "width": 90,
+      "height": 210,
+      "category": "security",
+      "description": "Höchster Einbruchschutz RC3",
+      "compatibleOptions": ["security-lock", "smart-lock", "extra-insulation", "security-glass", "multi-point-lock", "fingerprint", "biometric-scanner", "facial-recognition", "video-doorbell", "motion-sensor", "magnetic-lock", "panic-room-lock", "anti-drill-protection", "reinforced-hinges", "fire-protection", "alarm-system", "bulletproof-glass", "app-control", "backup-battery"]
+    },
+    {
+      "id": "glass-modern-001",
+      "name": "Glas-Design Tür",
+      "basePrice": 2100,
+      "material": "Glas-Aluminium",
+      "width": 100,
+      "height": 220,
+      "category": "glass",
+      "description": "Moderne Glastür mit Aluminiumrahmen",
+      "compatibleOptions": ["smart-lock", "led-lighting", "custom-color", "decorative-glass", "privacy-glass", "fingerprint", "video-doorbell", "automatic-opener", "keypad-entry", "app-control", "smart-glass", "heated-glass", "self-cleaning-glass", "anti-fog-coating", "uv-protection", "mirror-finish", "frosted-glass", "tinted-glass"]
+    },
+    {
+      "id": "eco-wood-001",
+      "name": "Öko Holztür",
+      "basePrice": 1350,
+      "material": "Öko-Holz",
+      "width": 90,
+      "height": 210,
+      "category": "eco",
+      "description": "Nachhaltige Holztür aus zertifiziertem Holz",
+      "compatibleOptions": ["eco-coating", "extra-insulation", "weather-seal", "glass-panel", "peephole", "door-chain", "mail-slot", "cylinder-lock", "handle-lock", "door-closer", "ventilation-grille", "threshold-seal", "sound-insulation", "uv-protection", "frosted-glass"]
+    }
+  ],
+  "optionPrices": {
+    "security-lock": 150,
+    "glass-panel": 200,
+    "smart-lock": 300,
+    "extra-insulation": 180,
+    "custom-color": 100,
+    "led-lighting": 250,
+    "fingerprint": 400,
+    "decorative-glass": 350,
+    "security-glass": 280,
+    "multi-point-lock": 320,
+    "weather-seal": 80,
+    "privacy-glass": 180,
+    "eco-coating": 120,
+    "video-doorbell": 380,
+    "intercom-system": 450,
+    "motion-sensor": 220,
+    "automatic-opener": 680,
+    "keypad-entry": 320,
+    "rfid-access": 280,
+    "magnetic-lock": 420,
+    "door-closer": 160,
+    "ventilation-grille": 90,
+    "cat-flap": 140,
+    "mail-slot": 75,
+    "peephole": 45,
+    "door-chain": 35,
+    "sound-insulation": 240,
+    "fire-protection": 380,
+    "anti-drill-protection": 280,
+    "reinforced-hinges": 180,
+    "threshold-seal": 60,
+    "handle-lock": 95,
+    "cylinder-lock": 120,
+    "deadbolt": 140,
+    "panic-room-lock": 890,
+    "biometric-scanner": 650,
+    "facial-recognition": 750,
+    "app-control": 200,
+    "backup-battery": 150,
+    "alarm-system": 420,
+    "glass-break-sensor": 180,
+    "anti-fog-coating": 85,
+    "self-cleaning-glass": 290,
+    "heated-glass": 340,
+    "smart-glass": 890,
+    "bulletproof-glass": 1200,
+    "uv-protection": 160,
+    "mirror-finish": 220,
+    "frosted-glass": 140,
+    "tinted-glass": 180
+  },
+  "categories": {
+    "classic": "Klassische Türen",
+    "modern": "Moderne Türen",
+    "security": "Sicherheitstüren",
+    "glass": "Glastüren",
+    "eco": "Öko-Türen"
+  },
+  "incompatibleCombinations": [
+    {
+      "material": "Holz",
+      "blockedOptions": ["led-lighting", "fingerprint", "biometric-scanner", "facial-recognition", "smart-glass", "heated-glass"],
+      "reason": "Elektronische Systeme nicht mit klassischem Holz kompatibel"
+    },
+    {
+      "material": "Eiche",
+      "blockedOptions": ["smart-glass", "automatic-opener", "app-control"],
+      "reason": "Moderne Technik passt nicht zum Landhausstil"
+    },
+    {
+      "material": "Glas-Aluminium",
+      "blockedOptions": ["security-lock", "multi-point-lock", "anti-drill-protection", "reinforced-hinges", "panic-room-lock"],
+      "reason": "Hochsicherheitsschlösser nicht bei Glastüren möglich"
+    },
+    {
+      "material": "Öko-Holz",
+      "blockedOptions": ["bulletproof-glass", "panic-room-lock", "magnetic-lock"],
+      "reason": "Öko-Materialien nicht mit Hochsicherheitstechnik kombinierbar"
+    },
+    {
+      "category": "security",
+      "blockedOptions": ["decorative-glass", "cat-flap", "mail-slot", "ventilation-grille"],
+      "reason": "Öffnungen und Dekoration reduzieren Sicherheit"
+    },
+    {
+      "category": "classic",
+      "blockedOptions": ["smart-glass", "facial-recognition", "app-control", "automatic-opener"],
+      "reason": "Moderne Technik passt nicht zu klassischem Design"
+    },
+    {
+      "category": "eco",
+      "blockedOptions": ["bulletproof-glass", "panic-room-lock", "anti-drill-protection"],
+      "reason": "Nachhaltigkeit und Hochsicherheit schließen sich aus"
+    },
+    {
+      "optionConflicts": [
+        ["glass-panel", "privacy-glass", "security-glass", "decorative-glass", "smart-glass", "bulletproof-glass", "frosted-glass", "tinted-glass"],
+        ["security-lock", "smart-lock", "magnetic-lock", "panic-room-lock"],
+        ["fingerprint", "biometric-scanner", "facial-recognition"],
+        ["keypad-entry", "rfid-access", "app-control"],
+        ["peephole", "video-doorbell", "intercom-system"],
+        ["door-chain", "automatic-opener"],
+        ["cat-flap", "mail-slot"],
+        ["anti-fog-coating", "self-cleaning-glass", "heated-glass"],
+        ["mirror-finish", "frosted-glass", "tinted-glass"],
+        ["sound-insulation", "ventilation-grille"],
+        ["fire-protection", "extra-insulation"],
+        ["cylinder-lock", "deadbolt", "handle-lock"]
+      ],
+      "reason": "Diese Optionen schließen sich gegenseitig aus"
+    },
+    {
+      "specialRules": [
+        {
+          "condition": "automatic-opener",
+          "blockedWith": ["door-closer", "door-chain", "deadbolt"],
+          "reason": "Automatische Öffnung nicht mit manuellen Sperren kombinierbar"
+        },
+        {
+          "condition": "panic-room-lock",
+          "blockedWith": ["cat-flap", "mail-slot", "ventilation-grille", "peephole"],
+          "reason": "Panikraum-Sicherheit duldet keine Öffnungen"
+        },
+        {
+          "condition": "bulletproof-glass",
+          "blockedWith": ["decorative-glass", "frosted-glass", "cat-flap"],
+          "reason": "Kugelsicheres Glas erfordert vollständige Integrität"
+        },
+        {
+          "condition": "smart-glass",
+          "blockedWith": ["privacy-glass", "frosted-glass", "tinted-glass"],
+          "reason": "Smart-Glas hat eigene Sichtschutz-Funktionen"
+        }
+      ]
+    }
+  ]
+}

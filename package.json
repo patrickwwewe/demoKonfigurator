@@ -1,0 +1,22 @@
+{
+  "name": "konfigurator_zwei",
+  "version": "1.0.0",
+  "description": "Türkonfigurator Backend",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js",
+    "debug": "node --inspect backend/server.js",
+    "debug-brk": "node --inspect-brk backend/server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": ["express", "api", "doors", "configurator"],
+  "author": "",
+  "license": "ISC"
+}
