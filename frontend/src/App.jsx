@@ -12,39 +12,91 @@ function App() {
   const [quote, setQuote] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // Katalog laden
+  // Katalog laden - für GitHub Pages ohne Backend
   useEffect(() => {
-    fetch('/api/catalog')
-      .then(res => res.json())
-      .then(data => {
-        setCatalog(data)
-        setSelectedDoor(data.doors[0]) // Erste Tür als Standard
-        setLoading(false)
-      })
-      .catch(err => {
-        console.error('Fehler beim Laden des Katalogs:', err)
-        setLoading(false)
-      })
+    // Statische Daten für GitHub Pages Demo
+    const demoData = {
+      doors: [
+        {
+          id: "classic-wood-001",
+          name: "Klassik Holztür",
+          basePrice: 1200,
+          material: "Holz",
+          width: 90,
+          height: 210,
+          category: "classic",
+          description: "Traditionelle Holztür mit natürlicher Maserung",
+          compatibleOptions: ["glass-panel", "custom-color", "extra-insulation", "weather-seal", "peephole", "door-chain"]
+        },
+        {
+          id: "modern-alu-001",
+          name: "Modern Aluminium",
+          basePrice: 1800,
+          material: "Aluminium", 
+          width: 100,
+          height: 220,
+          category: "modern",
+          description: "Schlankes Design mit klaren Linien",
+          compatibleOptions: ["smart-lock", "glass-panel", "custom-color", "led-lighting", "fingerprint", "video-doorbell"]
+        },
+        {
+          id: "security-steel-001",
+          name: "Sicherheitstür RC2",
+          basePrice: 2500,
+          material: "Stahl",
+          width: 90,
+          height: 210,
+          category: "security", 
+          description: "Einbruchschutz Klasse RC2",
+          compatibleOptions: ["security-lock", "smart-lock", "extra-insulation", "security-glass", "multi-point-lock", "alarm-system"]
+        }
+      ],
+      optionPrices: {
+        "security-lock": 150,
+        "glass-panel": 200,
+        "smart-lock": 300,
+        "extra-insulation": 180,
+        "custom-color": 100,
+        "led-lighting": 250,
+        "fingerprint": 400,
+        "security-glass": 280,
+        "multi-point-lock": 320,
+        "weather-seal": 80,
+        "video-doorbell": 380,
+        "peephole": 45,
+        "door-chain": 35,
+        "alarm-system": 420
+      }
+    };
+    
+    setCatalog(demoData);
+    setSelectedDoor(demoData.doors[0]);
+    setLoading(false);
   }, [])
 
-  // Preis berechnen
+  // Preis berechnen - lokale Berechnung für GitHub Pages
   useEffect(() => {
-    if (selectedDoor && selectedOptions.length >= 0) {
-      fetch('/api/quote', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          doorId: selectedDoor.id,
-          options: selectedOptions
-        })
-      })
-      .then(res => res.json())
-      .then(data => setQuote(data))
-      .catch(err => console.error('Fehler bei Preisberechnung:', err))
+    if (selectedDoor && catalog) {
+      let total = selectedDoor.basePrice;
+      const appliedOptions = [];
+      
+      for (const option of selectedOptions) {
+        if (catalog.optionPrices[option]) {
+          total += catalog.optionPrices[option];
+          appliedOptions.push({
+            id: option,
+            price: catalog.optionPrices[option]
+          });
+        }
+      }
+      
+      setQuote({
+        total,
+        basePrice: selectedDoor.basePrice,
+        appliedOptions
+      });
     }
-  }, [selectedDoor, selectedOptions])
+  }, [selectedDoor, selectedOptions, catalog])
 
   if (loading) {
     return (
