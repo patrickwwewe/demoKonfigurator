@@ -811,6 +811,219 @@ sudo systemctl start door-configurator
 
 Mit dieser Integration läuft Ihr **komplettes Backend in Pascal/C#** während das Frontend weiterhin in React bleibt!
 
+### 📦 3D-Modelle Integration
+
+#### Echte Türmodelle einbinden
+
+**Methoden für 3D-Türmodelle:**
+
+1. **📱 3D-Scan mit Smartphone/Scanner:**
+   - **Apps:** Polycam, RealityScan, 3D Scanner App
+   - **Workflow:** Objekt scannen → Export als `.glb`
+   - **Vorteil:** Realistische Texturen und Details
+
+2. **🏢 CAD-Modelle von Herstellern:**
+   - **Formate:** Revit, SketchUp, STEP, OBJ, FBX
+   - **Konvertierung:** Blender, 3ds Max → Export als `.glb`
+   - **Vorteil:** Präzise Maße und professionelle Qualität
+
+3. **🌐 Online-Plattformen:**
+   - [Sketchfab.com](https://sketchfab.com) - Große Auswahl, PBR-Materialien
+   - [CGTrader.com](https://cgtrader.com) - Kommerzielle Modelle
+   - [Free3D.com](https://free3d.com) - Kostenlose Modelle
+   - [TurboSquid.com](https://turbosquid.com) - Professionelle Qualität
+
+**⚠️ Wichtige Anforderungen:**
+```bash
+# Format: .glb mit PBR-Materialien
+# Dateigröße: <15 MB pro Modell
+# Lizenz: CC0 oder kommerzielle Nutzung erlaubt
+# Komprimierung: gltfpack für Optimierung
+
+# Beispiel Komprimierung:
+npx gltfpack -i door_model.glb -o door_model_optimized.glb
+```
+
+#### 3D-Modell Implementation
+```javascript
+// Frontend: 3D-Modell laden (React Three Fiber)
+import { useLoader } from '@react-three/fiber'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+
+function RealDoorModel({ modelUrl, options }) {
+  const gltf = useLoader(GLTFLoader, modelUrl)
+  
+  return (
+    <primitive 
+      object={gltf.scene} 
+      scale={[1, 1, 1]}
+      position={[0, -1, 0]}
+    />
+  )
+}
+
+// Pascal Backend: Modell-URLs bereitstellen
+procedure TDoorConfiguratorHandler.HandleModelsRequest;
+var
+  Response: TJSONObject;
+  ModelsArray: TJSONArray;
+begin
+  Response := TJSONObject.Create;
+  ModelsArray := TJSONArray.Create;
+  
+  // Modell-URLs aus Datenbank laden
+  ModelsArray.Add(CreateModelJSON('classic-wood-001', '/models/classic_wood.glb'));
+  ModelsArray.Add(CreateModelJSON('modern-alu-001', '/models/modern_aluminum.glb'));
+  
+  Response.AddPair('models', ModelsArray);
+  AResponseInfo.ContentText := Response.ToJSON;
+end;
+```
+
+### 🔗 Erweiterte Pascal-Backend Anbindung
+
+#### **Methode 1: REST-API (Empfohlen)**
+```pascal
+// Pascal mit fpWeb oder Delphi + Horse Framework
+program DoorConfiguratorAPI;
+
+uses
+  Horse, Horse.Jhonson, Horse.CORS,
+  System.JSON, FireDAC.Comp.Client;
+
+var
+  App: THorse;
+
+begin
+  App := THorse.Create(3000);
+  
+  // CORS für Frontend
+  App.Use(Cors);
+  App.Use(Jhonson);
+  
+  // API Endpunkte
+  App.Get('/api/doors', GetDoors);
+  App.Post('/api/quote', CalculateQuote);
+  App.Get('/api/models/:id', GetDoorModel);
+  
+  App.Listen;
+end;
+
+procedure GetDoors(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+var
+  DoorsJSON: TJSONArray;
+begin
+  DoorsJSON := LoadDoorsFromDatabase();
+  Res.Send(DoorsJSON);
+end;
+```
+
+#### **Methode 2: DLL/SO Integration**
+```pascal
+// Pascal DLL für direkte Node.js Integration
+library DoorConfiguratorLib;
+
+function CalculatePriceC(DoorID: PAnsiChar; Options: PAnsiChar): PAnsiChar; stdcall;
+var
+  Calculator: TPriceCalculator;
+  Result: string;
+begin
+  Calculator := TPriceCalculator.Create;
+  try
+    Result := Calculator.CalculatePrice(string(DoorID), string(Options));
+    CalculatePriceC := StrNew(PAnsiChar(AnsiString(Result)));
+  finally
+    Calculator.Free;
+  end;
+end;
+
+exports CalculatePriceC;
+begin
+end.
+```
+
+```javascript
+// Node.js Backend: DLL laden
+const ffi = require('ffi-napi');
+
+const doorCalculator = ffi.Library('./DoorConfiguratorLib.dll', {
+  'CalculatePriceC': ['string', ['string', 'string']]
+});
+
+app.post('/api/quote', (req, res) => {
+  const result = doorCalculator.CalculatePriceC(req.body.doorId, JSON.stringify(req.body.options));
+  res.json(JSON.parse(result));
+});
+```
+
+#### **Methode 3: Datei-basierter Austausch**
+```pascal
+// Pascal: JSON Export
+procedure TDoorManager.ExportCatalogToJSON;
+var
+  JSONObj: TJSONObject;
+  DoorsArray: TJSONArray;
+begin
+  JSONObj := TJSONObject.Create;
+  DoorsArray := BuildDoorsArray;
+  JSONObj.AddPair('doors', DoorsArray);
+  
+  // Export nach Datei
+  TFile.WriteAllText('catalog.json', JSONObj.ToString, TEncoding.UTF8);
+end;
+```
+
+```javascript
+// Node.js: JSON Import
+const fs = require('fs');
+const catalog = JSON.parse(fs.readFileSync('catalog.json', 'utf8'));
+
+app.get('/api/catalog', (req, res) => {
+  res.json(catalog);
+});
+```
+
+#### **Methode 4: CLI/EXE Integration**
+```pascal
+// Pascal Kommandozeilen-Tool
+program DoorConfigCLI;
+var
+  Command, DoorID, Options: string;
+  Calculator: TPriceCalculator;
+begin
+  if ParamCount >= 3 then
+  begin
+    Command := ParamStr(1);  // "calculate"
+    DoorID := ParamStr(2);   // "classic-wood-001"
+    Options := ParamStr(3);  // "smart-lock,glass-panel"
+    
+    if Command = 'calculate' then
+    begin
+      Calculator := TPriceCalculator.Create;
+      try
+        WriteLn(Calculator.CalculatePrice(DoorID, Options));
+      finally
+        Calculator.Free;
+      end;
+    end;
+  end;
+end.
+```
+
+```javascript
+// Node.js: Pascal EXE aufrufen
+const { spawn } = require('child_process');
+
+app.post('/api/quote', (req, res) => {
+  const pascal = spawn('./DoorConfigCLI.exe', ['calculate', req.body.doorId, req.body.options.join(',')]);
+  
+  pascal.stdout.on('data', (data) => {
+    const result = JSON.parse(data.toString());
+    res.json(result);
+  });
+});
+```
+
 ## 🎯 Geplante Features
 
 - [ ] **Erweiterte 3D-Modelle:** Upload echter GLB/GLTF Türmodelle
