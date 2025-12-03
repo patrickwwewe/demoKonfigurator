@@ -59,7 +59,7 @@
         <div class="spinner"></div>
         <div class="loading">Türkonfigurator wird geladen...</div>
         <p>Sie werden automatisch weitergeleitet.</p>
-        <a href="./frontend/index.html" class="manual-link">
+        <a href="./frontend/dist/index.html" class="manual-link">
             🚪 Direkt zum Türkonfigurator
         </a>
         <p style="font-size: 0.9rem; margin-top: 2rem; opacity: 0.8;">
@@ -69,10 +69,10 @@
     </div>
     
     <script>
-        // Einfache, direkte Weiterleitung ohne komplexe Logik
+        // Einfache, direkte Weiterleitung zum gebauten Frontend
         function redirect() {
-            // Versuche den simpelsten Weg zuerst
-            window.location.replace('./frontend/index.html');
+            // Verwende das gebaute dist Verzeichnis
+            window.location.replace('./frontend/dist/index.html');
         }
         
         // Sofortige Weiterleitung
@@ -81,8 +81,8 @@
         // Sicherheits-Fallback
         document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
-                if (window.location.href.includes('index.html')) {
-                    window.location.replace('./frontend/index.html');
+                if (window.location.href.includes('/index.html') && !window.location.href.includes('/dist/')) {
+                    window.location.replace('./frontend/dist/index.html');
                 }
             }, 2000);
         });
