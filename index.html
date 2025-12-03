@@ -59,7 +59,7 @@
         <div class="spinner"></div>
         <div class="loading">Türkonfigurator wird geladen...</div>
         <p>Sie werden automatisch weitergeleitet.</p>
-        <a href="./frontend/index.html" class="manual-link">
+        <a href="./frontend/index.html" class="manual-link" id="manualLink">
             🚪 Direkt zum Türkonfigurator
         </a>
         <p style="font-size: 0.9rem; margin-top: 2rem; opacity: 0.8;">
@@ -69,29 +69,98 @@
     </div>
     
     <script>
-        // Edge-kompatible Weiterleitung
-        function redirectToApp() {
-            try {
-                // Versuche verschiedene Pfade für maximale Kompatibilität
-                const paths = [
-                    './frontend/index.html',
-                    '/demoKonfigurator/frontend/index.html',
-                    'frontend/index.html'
-                ];
-                
-                // Direkte Weiterleitung für Edge
-                window.location.href = './frontend/index.html';
-            } catch (error) {
-                console.log('Redirect error:', error);
+        // Browser-Detection und angepasste Weiterleitung
+        function detectBrowserAndRedirect() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const isEdge = userAgent.includes('edg/') || userAgent.includes('edge/');
+            const isChrome = userAgent.includes('chrome') && !isEdge;
+            const isFirefox = userAgent.includes('firefox');
+            
+            console.log('Browser detected:', isEdge ? 'Edge' : isChrome ? 'Chrome' : isFirefox ? 'Firefox' : 'Other');
+            
+            let targetPath;
+            
+            if (isEdge) {
+                // Edge braucht absoluten Pfad für GitHub Pages
+                targetPath = '/demoKonfigurator/frontend/index.html';
+            } else if (isChrome) {
+                // Chrome funktioniert mit relativem Pfad
+                targetPath = './frontend/index.html';
+            } else {
+                // Fallback für andere Browser
+                targetPath = './frontend/index.html';
             }
+            
+            console.log('Redirecting to:', targetPath);
+            
+            // Teste erst ob die Seite existiert
+            fetch(targetPath, { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = targetPath;
+                    } else {
+                        // Fallback Pfade versuchen
+                        tryFallbackPaths();
+                    }
+                })
+                .catch(() => {
+                    tryFallbackPaths();
+                });
         }
         
-        // Sofortige Weiterleitung für Edge
-        setTimeout(redirectToApp, 1500);
+        function tryFallbackPaths() {
+            const fallbackPaths = [
+                '/demoKonfigurator/frontend/index.html',
+                './frontend/index.html',
+                'frontend/index.html',
+                '/frontend/index.html'
+            ];
+            
+            let currentIndex = 0;
+            
+            function tryNext() {
+                if (currentIndex >= fallbackPaths.length) {
+                    document.querySelector('.loading').textContent = 'Fehler beim Laden';
+                    document.querySelector('.container p').textContent = 'Bitte versuchen Sie es später erneut.';
+                    return;
+                }
+                
+                const path = fallbackPaths[currentIndex];
+                console.log('Trying fallback path:', path);
+                
+                fetch(path, { method: 'HEAD' })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.href = path;
+                        } else {
+                            currentIndex++;
+                            tryNext();
+                        }
+                    })
+                    .catch(() => {
+                        currentIndex++;
+                        tryNext();
+                    });
+            }
+            
+            tryNext();
+        }
+        
+        // Starte Browser-Detection nach kurzer Verzögerung
+        setTimeout(detectBrowserAndRedirect, 1000);
         
         // Fallback für ältere Browser
         document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(redirectToApp, 2000);
+            setTimeout(detectBrowserAndRedirect, 1500);
+            
+            // Update manual link based on browser
+            const userAgent = navigator.userAgent.toLowerCase();
+            const isEdge = userAgent.includes('edg/') || userAgent.includes('edge/');
+            const manualLink = document.getElementById('manualLink');
+            
+            if (isEdge && manualLink) {
+                manualLink.href = '/demoKonfigurator/frontend/index.html';
+            }
         });
     </script>
 </body>
