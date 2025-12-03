@@ -40,10 +40,15 @@ jobs:
         cd frontend
         npm run build
         
+    - name: Copy files to root for GitHub Pages
+      run: |
+        cp -r frontend/dist/* .
+        ls -la
+        
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: ./frontend/dist
+        path: .
 
   deploy:
     environment:
