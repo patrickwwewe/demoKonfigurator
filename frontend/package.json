@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:github": "cp src/App-github.jsx src/App.jsx && vite build --config vite.config.github.js",
     "preview": "vite preview"
   },
   "dependencies": {
