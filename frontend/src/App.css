@@ -269,6 +269,67 @@
   }
 }
 
+/* iPhone-spezifische Optimierungen */
+@media (max-width: 480px) and (orientation: portrait) {
+  .canvas-container {
+    min-height: 45vh;
+  }
+  
+  .config-panel {
+    max-height: 55vh;
+    padding: 1rem;
+  }
+  
+  .header {
+    padding: 0.8rem;
+  }
+  
+  .header h1 {
+    font-size: 1.2rem;
+  }
+  
+  .price {
+    padding: 0.3rem 1rem;
+    font-size: 1rem;
+  }
+}
+
+/* iPhone Landscape */
+@media (max-width: 896px) and (orientation: landscape) {
+  .main-content {
+    flex-direction: row;
+  }
+  
+  .canvas-container {
+    min-height: 100%;
+  }
+  
+  .config-panel {
+    width: 300px;
+    max-height: 100%;
+  }
+}
+
+/* Touch-Optimierung für alle mobilen Geräte */
+@media (hover: none) {
+  .door-card:hover {
+    border-color: transparent;
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .option-item:hover {
+    border-color: #e0e0e0;
+    background: rgba(255, 255, 255, 0.8);
+  }
+  
+  /* Größere Touch-Bereiche */
+  .door-card, .option-item {
+    padding: 1.2rem;
+    min-height: 44px; /* Apple empfohlene Touch-Größe */
+  }
+}
+
 @media (min-width: 1920px) {
   .canvas-container {
     min-height: 60vh;

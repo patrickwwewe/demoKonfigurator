@@ -127,7 +127,10 @@ function App() {
             shadows
             dpr={[1, 2]}
             gl={{ antialias: true }}
-            style={{ minHeight: '400px' }}
+            style={{ 
+              minHeight: window.innerWidth < 768 ? '350px' : '400px',
+              touchAction: 'none'
+            }}
           >
             <color attach="background" args={['#f8f9fa']} />
             <ambientLight intensity={0.6} />
@@ -171,6 +174,14 @@ function App() {
               target={[0, 0, 0]}
               enableDamping={true}
               dampingFactor={0.05}
+              // iPhone Touch-Optimierung
+              zoomSpeed={0.5}
+              rotateSpeed={0.6}
+              touchAction="manipulation"
+              touches={{
+                ONE: 2, // ROTATE mit einem Finger  
+                TWO: 1  // DOLLY (Zoom) mit zwei Fingern
+              }}
             />
           </Canvas>
         </div>
