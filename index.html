@@ -69,23 +69,10 @@
     </div>
     
     <script>
-        // Einfache, direkte Weiterleitung zum gebauten Frontend
-        function redirect() {
-            // Verwende das gebaute dist Verzeichnis
-            window.location.replace('./frontend/dist/index.html');
-        }
-        
-        // Sofortige Weiterleitung
-        setTimeout(redirect, 1000);
-        
-        // Sicherheits-Fallback
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                if (window.location.href.includes('/index.html') && !window.location.href.includes('/dist/')) {
-                    window.location.replace('./frontend/dist/index.html');
-                }
-            }, 2000);
-        });
+        // Einfache Weiterleitung nach kurzer Verzögerung
+        setTimeout(() => {
+            window.location.href = './frontend/dist/index.html';
+        }, 2000);
     </script>
 </body>
 </html>
