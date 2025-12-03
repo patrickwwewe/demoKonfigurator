@@ -99,14 +99,14 @@ function App() {
     }
   }, [selectedDoor, selectedOptions, catalog])
 
-  // iPhone Landscape Detection
+  // iPhone Portrait Detection (empfehle Querformat!)
   useEffect(() => {
     const checkOrientation = () => {
-      const isLandscape = window.innerWidth > window.innerHeight
+      const isPortrait = window.innerWidth < window.innerHeight
       const isMobile = window.innerWidth < 768
       const isIPhone = /iPhone|iPad|iPod/.test(navigator.userAgent)
       
-      if (isLandscape && isMobile && isIPhone) {
+      if (isPortrait && isMobile && isIPhone) {
         setShowLandscapeWarning(true)
       } else {
         setShowLandscapeWarning(false)
@@ -136,10 +136,10 @@ function App() {
     return (
       <div className="landscape-warning">
         <div className="warning-content">
-          <div className="phone-icon">📱</div>
+          <div className="phone-icon">🔄</div>
           <h2>🚪 Türkonfigurator</h2>
-          <p>Für die beste Erfahrung drehen Sie Ihr iPhone ins <strong>Hochformat</strong></p>
-          <div className="rotate-hint">↻ Gerät drehen</div>
+          <p>Für die beste 3D-Erfahrung drehen Sie Ihr iPhone ins <strong>Querformat</strong>!</p>
+          <div className="landscape-icon">📱 ↔️</div>
           <button 
             className="continue-anyway"
             onClick={() => setShowLandscapeWarning(false)}

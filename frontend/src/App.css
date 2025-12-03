@@ -333,10 +333,16 @@
   line-height: 1.5;
 }
 
-.rotate-hint {
+.landscape-icon {
   font-size: 2rem;
   margin: 1rem 0;
-  animation: rotate 3s linear infinite;
+  animation: wiggle 2s ease-in-out infinite;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
 }
 
 .continue-anyway {
@@ -376,54 +382,46 @@
   }
 }
 
-/* Verbesserte iPhone Landscape - kompakter */
-@media (max-width: 896px) and (orientation: landscape) and (max-height: 500px) {
+/* iPhone Landscape - optimiert für 3D-Konfigurator */
+@media (max-width: 896px) and (orientation: landscape) {
   .main-content {
     flex-direction: row;
     height: 100vh;
   }
   
   .canvas-container {
+    flex: 2;
     min-height: 100vh;
-    height: 100vh;
   }
   
   .config-panel {
-    width: 280px;
+    width: 300px;
     max-height: 100vh;
     padding: 1rem;
+    overflow-y: auto;
   }
   
   .header {
-    padding: 0.5rem 1rem;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    height: auto;
+    padding: 0.8rem 1rem;
   }
   
   .header h1 {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
   
-  .price {
-    padding: 0.2rem 0.8rem;
-    font-size: 0.9rem;
-  }
-  
-  .app {
-    padding-top: 60px; /* Header-Höhe kompensieren */
-  }
-  
+  /* Kompaktere Optionen im Landscape */
   .config-section h3 {
     font-size: 1rem;
     margin-bottom: 0.5rem;
   }
   
   .door-card, .option-item {
-    padding: 0.6rem;
+    padding: 0.8rem;
+  }
+  
+  .summary {
+    margin-top: 1rem;
+    padding: 1rem;
   }
 }
 
