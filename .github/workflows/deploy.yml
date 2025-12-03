@@ -35,14 +35,15 @@ jobs:
         cd frontend
         npm ci
         
-    - name: Build Frontend
+    - name: Build Frontend for GitHub Pages
       run: |
         cd frontend
-        npm run build
+        cp src/App-github.jsx src/App.jsx
+        npx vite build --config vite.config.github.js
         
     - name: Copy files to root for GitHub Pages
       run: |
-        cp -r frontend/dist/* .
+        cp -r dist/* .
         ls -la
         
     - name: Upload artifact
