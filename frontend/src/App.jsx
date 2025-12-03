@@ -11,6 +11,7 @@ function App() {
   const [catalog, setCatalog] = useState(null)
   const [quote, setQuote] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [showLandscapeWarning, setShowLandscapeWarning] = useState(false)
 
   // Katalog laden - für GitHub Pages ohne Backend
   useEffect(() => {
@@ -98,6 +99,30 @@ function App() {
     }
   }, [selectedDoor, selectedOptions, catalog])
 
+  // iPhone Landscape Detection
+  useEffect(() => {
+    const checkOrientation = () => {
+      const isLandscape = window.innerWidth > window.innerHeight
+      const isMobile = window.innerWidth < 768
+      const isIPhone = /iPhone|iPad|iPod/.test(navigator.userAgent)
+      
+      if (isLandscape && isMobile && isIPhone) {
+        setShowLandscapeWarning(true)
+      } else {
+        setShowLandscapeWarning(false)
+      }
+    }
+    
+    checkOrientation()
+    window.addEventListener('resize', checkOrientation)
+    window.addEventListener('orientationchange', checkOrientation)
+    
+    return () => {
+      window.removeEventListener('resize', checkOrientation)
+      window.removeEventListener('orientationchange', checkOrientation)
+    }
+  }, [])
+
   if (loading) {
     return (
       <div className="loading">
@@ -106,10 +131,30 @@ function App() {
     )
   }
 
+  // iPhone Landscape Warning
+  if (showLandscapeWarning) {
+    return (
+      <div className="landscape-warning">
+        <div className="warning-content">
+          <div className="phone-icon">📱</div>
+          <h2>🚪 Türkonfigurator</h2>
+          <p>Für die beste Erfahrung drehen Sie Ihr iPhone ins <strong>Hochformat</strong></p>
+          <div className="rotate-hint">↻ Gerät drehen</div>
+          <button 
+            className="continue-anyway"
+            onClick={() => setShowLandscapeWarning(false)}
+          >
+            Trotzdem weitermachen
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="app">
       <header className="header">
-        <h1>😪 Türkonfigurator</h1>
+        <h1>🚪 Türkonfigurator</h1>
         <div className="price">
           {quote && `${quote.total.toLocaleString('de-DE')} €`}
         </div>

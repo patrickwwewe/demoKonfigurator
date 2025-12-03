@@ -294,19 +294,136 @@
   }
 }
 
-/* iPhone Landscape */
-@media (max-width: 896px) and (orientation: landscape) {
+/* Landscape Warning für iPhone */
+.landscape-warning {
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.warning-content {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  backdrop-filter: blur(10px);
+}
+
+.phone-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  animation: bounce 2s infinite;
+}
+
+.warning-content h2 {
+  color: #333;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+}
+
+.warning-content p {
+  color: #666;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.rotate-hint {
+  font-size: 2rem;
+  margin: 1rem 0;
+  animation: rotate 3s linear infinite;
+}
+
+.continue-anyway {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.3s;
+  margin-top: 1rem;
+}
+
+.continue-anyway:hover {
+  transform: translateY(-2px);
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Verbesserte iPhone Landscape - kompakter */
+@media (max-width: 896px) and (orientation: landscape) and (max-height: 500px) {
   .main-content {
     flex-direction: row;
+    height: 100vh;
   }
   
   .canvas-container {
-    min-height: 100%;
+    min-height: 100vh;
+    height: 100vh;
   }
   
   .config-panel {
-    width: 300px;
-    max-height: 100%;
+    width: 280px;
+    max-height: 100vh;
+    padding: 1rem;
+  }
+  
+  .header {
+    padding: 0.5rem 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    height: auto;
+  }
+  
+  .header h1 {
+    font-size: 1rem;
+  }
+  
+  .price {
+    padding: 0.2rem 0.8rem;
+    font-size: 0.9rem;
+  }
+  
+  .app {
+    padding-top: 60px; /* Header-Höhe kompensieren */
+  }
+  
+  .config-section h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .door-card, .option-item {
+    padding: 0.6rem;
   }
 }
 
