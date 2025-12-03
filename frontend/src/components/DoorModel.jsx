@@ -72,7 +72,7 @@ export default function DoorModel({ door, options }) {
       </Box>
 
       {/* Haupttür */}
-      <Box args={[1.8, 2, 0.08]} position={[0, 0, 0]} castShadow receiveShadow>
+      <Box args={[1.8, 2, 0.08]} position={[0, 0, 0]} castShadow>
         <meshStandardMaterial 
           color={doorColor} 
           roughness={door.material.includes('Aluminium') ? 0.2 : 0.6}

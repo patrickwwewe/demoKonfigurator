@@ -155,9 +155,13 @@ function App() {
             
             <ContactShadows 
               position={[0, -1.5, 0]}
-              opacity={0.4}
-              scale={10}
-              blur={2}
+              opacity={0.3}
+              scale={6}
+              blur={1.5}
+              far={2}
+              smooth={true}
+              resolution={512}
+              color="#000000"
             />
             
             <Environment preset="apartment" />
