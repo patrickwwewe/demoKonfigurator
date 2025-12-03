@@ -290,6 +290,527 @@ namespace DoorConfigurator.Models
 
 **Für lokale Entwicklung oder eigene Server sind Pascal/C# perfekt geeignet!**
 
+## 🔗 Integration mit Pascal/C# Backend
+
+### Komplette Backend-Ersetzung mit eigener Logik
+
+#### Pascal/Delphi Server Implementation
+```pascal
+program DoorConfiguratorServer;
+
+{$APPTYPE CONSOLE}
+
+uses
+  IdHTTPServer, IdContext, IdCustomHTTPServer, IdHTTPHeaderInfo,
+  System.JSON, System.SysUtils, System.Generics.Collections,
+  FireDAC.Comp.Client, FireDAC.Stan.Def, FireDAC.Phys.SQLite;
+
+type
+  // Datenstrukturen
+  TDoorMaterial = (dmWood, dmOak, dmAluminium, dmSteel, dmGlass, dmEco);
+  TDoorCategory = (dcClassic, dcModern, dcSecurity, dcGlass, dcEco);
+  
+  TDoorOption = record
+    ID: string;
+    Name: string;
+    Price: Currency;
+    Category: string;
+  end;
+  
+  TDoor = class
+  private
+    FID: string;
+    FName: string;
+    FBasePrice: Currency;
+    FMaterial: TDoorMaterial;
+    FCategory: TDoorCategory;
+    FCompatibleOptions: TArray<string>;
+    FDescription: string;
+    FWidth, FHeight: Integer;
+  public
+    constructor Create(const AID, AName: string; APrice: Currency);
+    function ToJSON: TJSONObject;
+    function IsOptionCompatible(const OptionID: string): Boolean;
+    
+    property ID: string read FID;
+    property Name: string read FName;
+    property BasePrice: Currency read FBasePrice;
+    property Material: TDoorMaterial read FMaterial write FMaterial;
+    property Category: TDoorCategory read FCategory write FCategory;
+    property CompatibleOptions: TArray<string> read FCompatibleOptions write FCompatibleOptions;
+  end;
+
+  // Validierungslogik
+  TConfigurationValidator = class
+  private
+    FIncompatibleRules: TDictionary<string, TStringList>;
+    FMaterialRules: TDictionary<TDoorMaterial, TStringList>;
+    FCategoryRules: TDictionary<TDoorCategory, TStringList>;
+    FConflictGroups: TArray<TStringList>; // Gegenseitig ausschließende Optionen
+  public
+    constructor Create;
+    destructor Destroy; override;
+    
+    function ValidateConfiguration(Door: TDoor; Options: TArray<string>): TValidationResult;
+    procedure LoadValidationRules; // Aus Datenbank/Config
+  end;
+
+  // REST API Handler
+  TDoorConfiguratorHandler = class
+  private
+    FDatabase: TFDConnection;
+    FValidator: TConfigurationValidator;
+    FDoors: TObjectList<TDoor>;
+    FOptions: TDictionary<string, TDoorOption>;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    
+    // API Endpunkte
+    procedure HandleCatalogRequest(AContext: TIdContext; ARequestInfo: TIdHTTPRequestInfo; AResponseInfo: TIdHTTPResponseInfo);
+    procedure HandleQuoteRequest(AContext: TIdContext; ARequestInfo: TIdHTTPRequestInfo; AResponseInfo: TIdHTTPResponseInfo);
+    procedure HandleOptionsRequest(AContext: TIdContext; ARequestInfo: TIdHTTPRequestInfo; AResponseInfo: TIdHTTPResponseInfo);
+    
+    // Datenbank-Integration
+    procedure LoadDoorsFromDatabase;
+    procedure LoadOptionsFromDatabase;
+    procedure SaveConfiguration(const DoorID: string; Options: TArray<string>; TotalPrice: Currency);
+  end;
+
+// Hauptserver
+procedure StartServer;
+var
+  Server: TIdHTTPServer;
+  Handler: TDoorConfiguratorHandler;
+begin
+  Handler := TDoorConfiguratorHandler.Create;
+  Server := TIdHTTPServer.Create(nil);
+  try
+    Server.DefaultPort := 3000;
+    Server.OnCommandGet := Handler.HandleCatalogRequest;
+    Server.OnCommandPost := Handler.HandleQuoteRequest;
+    Server.Active := True;
+    
+    WriteLn('Pascal Türkonfigurator Server läuft auf Port 3000');
+    WriteLn('API verfügbar unter:');
+    WriteLn('  GET  http://localhost:3000/api/catalog');
+    WriteLn('  POST http://localhost:3000/api/quote');
+    WriteLn('  GET  http://localhost:3000/api/door/{id}/options');
+    
+    ReadLn; // Server läuft bis Enter gedrückt wird
+  finally
+    Server.Free;
+    Handler.Free;
+  end;
+end;
+
+begin
+  StartServer;
+end.
+```
+
+#### C# ASP.NET Core API
+```csharp
+// Program.cs
+using DoorConfigurator.Models;
+using DoorConfigurator.Services;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Services
+builder.Services.AddDbContext<DoorConfiguratorContext>(options =>
+    options.UseSqlite("Data Source=doors.db"));
+builder.Services.AddScoped<IDoorService, DoorService>();
+builder.Services.AddScoped<IValidationService, ValidationService>();
+builder.Services.AddScoped<IPricingService, PricingService>();
+
+builder.Services.AddControllers();
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+    });
+});
+
+var app = builder.Build();
+
+app.UseCors();
+app.MapControllers();
+app.Run("http://localhost:3000");
+
+// Models/Door.cs
+namespace DoorConfigurator.Models
+{
+    public enum DoorMaterial
+    {
+        Wood, Oak, Aluminium, Steel, Glass, Eco
+    }
+    
+    public enum DoorCategory  
+    {
+        Classic, Modern, Security, Glass, Eco
+    }
+
+    public class Door
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public decimal BasePrice { get; set; }
+        public DoorMaterial Material { get; set; }
+        public DoorCategory Category { get; set; }
+        public List<string> CompatibleOptions { get; set; } = new();
+        public string Description { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+        
+        public bool IsOptionCompatible(string optionId)
+        {
+            return CompatibleOptions.Contains(optionId);
+        }
+    }
+
+    public class DoorOption
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public string Category { get; set; }
+        public List<string> IncompatibleWith { get; set; } = new();
+    }
+
+    public class ValidationRule
+    {
+        public string Id { get; set; }
+        public DoorMaterial? MaterialRestriction { get; set; }
+        public DoorCategory? CategoryRestriction { get; set; }
+        public List<string> BlockedOptions { get; set; } = new();
+        public List<List<string>> ConflictGroups { get; set; } = new();
+        public string Reason { get; set; }
+    }
+}
+
+// Services/ValidationService.cs
+namespace DoorConfigurator.Services
+{
+    public class ValidationService : IValidationService
+    {
+        private readonly DoorConfiguratorContext _context;
+        private readonly List<ValidationRule> _rules;
+        
+        public ValidationService(DoorConfiguratorContext context)
+        {
+            _context = context;
+            LoadValidationRules();
+        }
+        
+        public ValidationResult ValidateConfiguration(Door door, List<string> options)
+        {
+            var errors = new List<string>();
+            
+            // 1. Material-basierte Validierung
+            var materialRules = _rules.Where(r => r.MaterialRestriction == door.Material);
+            foreach (var rule in materialRules)
+            {
+                var conflicts = rule.BlockedOptions.Intersect(options).ToList();
+                if (conflicts.Any())
+                {
+                    errors.Add($"{rule.Reason}: {string.Join(", ", conflicts)}");
+                }
+            }
+            
+            // 2. Kategorie-basierte Validierung  
+            var categoryRules = _rules.Where(r => r.CategoryRestriction == door.Category);
+            foreach (var rule in categoryRules)
+            {
+                var conflicts = rule.BlockedOptions.Intersect(options).ToList();
+                if (conflicts.Any())
+                {
+                    errors.Add($"{rule.Reason}: {string.Join(", ", conflicts)}");
+                }
+            }
+            
+            // 3. Gegenseitig ausschließende Optionen
+            foreach (var rule in _rules)
+            {
+                foreach (var conflictGroup in rule.ConflictGroups)
+                {
+                    var selectedConflicts = conflictGroup.Intersect(options).ToList();
+                    if (selectedConflicts.Count > 1)
+                    {
+                        errors.Add($"Nur eine Option erlaubt: {string.Join(" oder ", selectedConflicts)}");
+                    }
+                }
+            }
+            
+            // 4. Kompatibilitätsprüfung mit Tür
+            foreach (var option in options)
+            {
+                if (!door.IsOptionCompatible(option))
+                {
+                    errors.Add($"Option '{option}' nicht verfügbar für {door.Name}");
+                }
+            }
+            
+            return new ValidationResult
+            {
+                IsValid = !errors.Any(),
+                Errors = errors
+            };
+        }
+    }
+}
+
+// Controllers/DoorController.cs
+[ApiController]
+[Route("api")]
+public class DoorController : ControllerBase
+{
+    private readonly IDoorService _doorService;
+    private readonly IValidationService _validationService;
+    private readonly IPricingService _pricingService;
+    
+    public DoorController(IDoorService doorService, IValidationService validationService, IPricingService pricingService)
+    {
+        _doorService = doorService;
+        _validationService = validationService;
+        _pricingService = pricingService;
+    }
+    
+    [HttpGet("catalog")]
+    public async Task<IActionResult> GetCatalog()
+    {
+        var doors = await _doorService.GetAllDoorsAsync();
+        var options = await _doorService.GetAllOptionsAsync();
+        
+        return Ok(new 
+        { 
+            doors = doors.Select(d => new
+            {
+                d.Id, d.Name, d.BasePrice, d.Material, d.Category,
+                d.Description, d.Width, d.Height, d.CompatibleOptions
+            }),
+            optionPrices = options.ToDictionary(o => o.Id, o => o.Price),
+            categories = Enum.GetNames<DoorCategory>().ToDictionary(c => c, c => c)
+        });
+    }
+    
+    [HttpPost("quote")]
+    public async Task<IActionResult> CalculateQuote([FromBody] QuoteRequest request)
+    {
+        var door = await _doorService.GetDoorByIdAsync(request.DoorId);
+        if (door == null)
+            return BadRequest(new { error = "Ungültige Tür-ID" });
+            
+        var validation = _validationService.ValidateConfiguration(door, request.Options);
+        if (!validation.IsValid)
+            return BadRequest(new { error = "Ungültige Konfiguration", details = validation.Errors });
+            
+        var pricing = await _pricingService.CalculatePriceAsync(door, request.Options);
+        
+        // Konfiguration in Datenbank speichern für Analytics
+        await _doorService.SaveConfigurationAsync(request.DoorId, request.Options, pricing.Total);
+        
+        return Ok(new 
+        { 
+            total = pricing.Total,
+            basePrice = door.BasePrice,
+            appliedOptions = pricing.AppliedOptions,
+            door = new { door.Id, door.Name, door.Material, door.Category }
+        });
+    }
+    
+    [HttpGet("door/{doorId}/options")]
+    public async Task<IActionResult> GetAvailableOptions(string doorId)
+    {
+        var door = await _doorService.GetDoorByIdAsync(doorId);
+        if (door == null)
+            return BadRequest(new { error = "Ungültige Tür-ID" });
+            
+        var availableOptions = await _doorService.GetCompatibleOptionsAsync(doorId);
+        
+        return Ok(new
+        {
+            door = new { door.Id, door.Name, door.Category },
+            availableOptions = availableOptions.Select(o => new { o.Id, o.Name, o.Price })
+        });
+    }
+}
+```
+
+### Frontend-Integration mit eigenem Backend
+
+#### JavaScript Frontend anpassen für eigene API
+```javascript
+// frontend/src/config/api.js
+const API_CONFIG = {
+  // Für lokale Entwicklung mit Pascal/C# Backend
+  BASE_URL: process.env.NODE_ENV === 'production' 
+    ? 'https://ihre-domain.com/api'  // Ihr eigener Server
+    : 'http://localhost:3000/api',   // Lokale Entwicklung
+    
+  ENDPOINTS: {
+    CATALOG: '/catalog',
+    QUOTE: '/quote',
+    OPTIONS: '/door/:doorId/options'
+  }
+};
+
+// API Service mit Backend-Integration
+class DoorConfiguratorAPI {
+  static async getCatalog() {
+    try {
+      const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.CATALOG}`);
+      if (!response.ok) throw new Error('Failed to fetch catalog');
+      return await response.json();
+    } catch (error) {
+      console.error('API Error:', error);
+      // Fallback auf lokale Demo-Daten
+      return this.getDemoData();
+    }
+  }
+  
+  static async calculateQuote(doorId, options) {
+    try {
+      const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.QUOTE}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ doorId, options })
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.details?.join(', ') || 'Validation failed');
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Quote calculation failed:', error);
+      throw error;
+    }
+  }
+  
+  static async getAvailableOptions(doorId) {
+    const url = API_CONFIG.BASE_URL + API_CONFIG.ENDPOINTS.OPTIONS.replace(':doorId', doorId);
+    const response = await fetch(url);
+    return await response.json();
+  }
+}
+
+// In App.jsx verwenden
+useEffect(() => {
+  DoorConfiguratorAPI.getCatalog()
+    .then(data => {
+      setCatalog(data);
+      setSelectedDoor(data.doors[0]);
+      setLoading(false);
+    })
+    .catch(err => {
+      console.error('Failed to load catalog:', err);
+      setLoading(false);
+    });
+}, []);
+```
+
+### Datenbank-Schema für Pascal/C#
+
+```sql
+-- SQLite/PostgreSQL/SQL Server Schema
+CREATE TABLE doors (
+    id VARCHAR(50) PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    base_price DECIMAL(10,2) NOT NULL,
+    material VARCHAR(20) NOT NULL,
+    category VARCHAR(20) NOT NULL,
+    description TEXT,
+    width INTEGER,
+    height INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE door_options (
+    id VARCHAR(50) PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    category VARCHAR(50),
+    description TEXT
+);
+
+CREATE TABLE door_compatible_options (
+    door_id VARCHAR(50) REFERENCES doors(id),
+    option_id VARCHAR(50) REFERENCES door_options(id),
+    PRIMARY KEY (door_id, option_id)
+);
+
+CREATE TABLE validation_rules (
+    id SERIAL PRIMARY KEY,
+    rule_type VARCHAR(20), -- 'material', 'category', 'conflict'
+    material VARCHAR(20),
+    category VARCHAR(20),
+    blocked_options JSON, -- Array von Option-IDs
+    conflict_groups JSON, -- Array von Arrays für gegenseitig ausschließende Optionen
+    reason TEXT,
+    active BOOLEAN DEFAULT true
+);
+
+CREATE TABLE configurations (
+    id SERIAL PRIMARY KEY,
+    door_id VARCHAR(50) REFERENCES doors(id),
+    selected_options JSON,
+    total_price DECIMAL(10,2),
+    client_ip VARCHAR(45),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Beispieldaten einfügen
+INSERT INTO doors VALUES 
+('classic-wood-001', 'Klassik Holztür', 1200.00, 'Wood', 'Classic', 'Traditionelle Holztür', 90, 210),
+('modern-alu-001', 'Modern Aluminium', 1800.00, 'Aluminium', 'Modern', 'Schlankes Design', 100, 220),
+('security-steel-001', 'Sicherheitstür RC2', 2500.00, 'Steel', 'Security', 'Einbruchschutz RC2', 90, 210);
+
+INSERT INTO door_options VALUES
+('smart-lock', 'Smart Lock', 300.00, 'Security', 'Elektronisches Schloss'),
+('glass-panel', 'Glaselement', 200.00, 'Design', 'Dekoratives Glaselement'),
+('led-lighting', 'LED-Beleuchtung', 250.00, 'Comfort', 'Integrierte LED-Beleuchtung');
+```
+
+### Deployment auf eigenem Server
+
+```bash
+# Pascal/Delphi Deployment
+# Kompilieren und auf Server kopieren
+dcc64 DoorConfiguratorServer.dpr
+scp DoorConfiguratorServer root@ihr-server.com:/opt/door-configurator/
+scp doors.db root@ihr-server.com:/opt/door-configurator/
+
+# C# Deployment
+dotnet publish -c Release -o ./publish
+scp -r ./publish/* root@ihr-server.com:/opt/door-configurator/
+
+# Systemd Service (Linux)
+sudo tee /etc/systemd/system/door-configurator.service > /dev/null <<EOF
+[Unit]
+Description=Door Configurator API
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/opt/door-configurator
+ExecStart=/opt/door-configurator/DoorConfiguratorServer
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl enable door-configurator
+sudo systemctl start door-configurator
+```
+
+Mit dieser Integration läuft Ihr **komplettes Backend in Pascal/C#** während das Frontend weiterhin in React bleibt!
+
 ## 🎯 Geplante Features
 
 - [ ] **Erweiterte 3D-Modelle:** Upload echter GLB/GLTF Türmodelle
