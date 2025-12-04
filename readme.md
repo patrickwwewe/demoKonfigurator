@@ -157,15 +157,15 @@ konfigurator_zwei/
 - `GET /api/door/:id/options` - Verfügbare Optionen für eine Tür
 
 ## 📊 Technische Details- Überblick
-Vite startet Development-Server
-React rendert die Benutzeroberfläche
-Three.js zeigt 3D-Tür an
-Express/Node.js liefert Tür-Daten via API
-JSON-Validierung prüft Kompatibilität
-CORS verbindet Frontend & Backend
-CSS Grid/Flexbox macht es responsive
-Die API ist eine Schnittstelle, die Ihr Frontend (React-App) mit dem Backend (Node.js Server) verbindet - wie ein Kellner, der Bestellungen zwischen Küche und Gast überbringt. In Ihrem Projekt liefert die API die Tür-Daten, berechnet Preise und validiert Konfigurationen über URLs wie /api/catalog oder /api/quote.
-er Development Server ist ein lokaler Webserver (Vite auf Port 5173), der Ihre React-App während der Entwicklung ausführt und dabei Features wie Hot-Reload (automatische Aktualisierung bei Code-Änderungen) bereitstellt. Er fungiert auch als Proxy, der API-Anfragen an Ihr Backend weiterleitet, damit Frontend und Backend reibungslos zusammenarbeiten können.
+- Vite startet Development-Server
+- React rendert die Benutzeroberfläche
+- Three.js zeigt 3D-Tür an
+- Express/Node.js liefert Tür-Daten via API 
+- JSON-Validierung prüft Kompatibilität
+- CORS verbindet Frontend & Backend
+- CSS Grid/Flexbox macht es responsive
+- Die API ist eine Schnittstelle, die Ihr Frontend (React-App) mit dem Backend (Node.js Server) verbindet - wie ein Kellner, der Bestellungen zwischen Küche und Gast überbringt. In Ihrem Projekt liefert die API die Tür-Daten, berechnet Preise und validiert Konfigurationen über URLs wie /api/catalog oder /api/quote.
+- Der Development Server ist ein lokaler Webserver (Vite auf Port 5173), der Ihre React-App während der Entwicklung ausführt und dabei Features wie Hot-Reload (automatische Aktualisierung bei Code-Änderungen) bereitstellt. Er fungiert auch als Proxy, der API-Anfragen an Ihr Backend weiterleitet, damit Frontend und Backend reibungslos zusammenarbeiten können.
 ## Aufbau:
 
 - **Frontend:** React 18 + Vite + Three.js
