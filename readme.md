@@ -125,6 +125,10 @@ VS Code Debug-Konfiguration ist bereits eingerichtet:
 2. Drücken Sie `F5`
 3. Wählen Sie "Debug Backend (Node.js)"
 
+
+
+
+
 ## 📁 Projektstruktur
 
 ```
@@ -151,6 +155,72 @@ konfigurator_zwei/
 - `GET /api/catalog` - Kompletter Türkatalog
 - `POST /api/quote` - Preisberechnung mit Validierung
 - `GET /api/door/:id/options` - Verfügbare Optionen für eine Tür
+
+## 📊 Technische Details- Überblick
+Vite startet Development-Server
+React rendert die Benutzeroberfläche
+Three.js zeigt 3D-Tür an
+Express/Node.js liefert Tür-Daten via API
+JSON-Validierung prüft Kompatibilität
+CORS verbindet Frontend & Backend
+CSS Grid/Flexbox macht es responsive
+Die API ist eine Schnittstelle, die Ihr Frontend (React-App) mit dem Backend (Node.js Server) verbindet - wie ein Kellner, der Bestellungen zwischen Küche und Gast überbringt. In Ihrem Projekt liefert die API die Tür-Daten, berechnet Preise und validiert Konfigurationen über URLs wie /api/catalog oder /api/quote.
+er Development Server ist ein lokaler Webserver (Vite auf Port 5173), der Ihre React-App während der Entwicklung ausführt und dabei Features wie Hot-Reload (automatische Aktualisierung bei Code-Änderungen) bereitstellt. Er fungiert auch als Proxy, der API-Anfragen an Ihr Backend weiterleitet, damit Frontend und Backend reibungslos zusammenarbeiten können.
+## Aufbau:
+
+- **Frontend:** React 18 + Vite + Three.js
+- **Backend:** Node.js + Express
+- **3D-Engine:** Three.js mit @react-three/fiber
+- **Validierung:** JSON-basierte Regel-Engine
+- **Responsive:** CSS Grid + Flexbox
+- **Browser-Support:** Moderne Browser (ES6+)
+- **Performance:** Lazy Loading + Code Splitting
+- @react-three/drei (^9.88.13) - Zusätzliche Three.js Utilities
+-  CORS Support (^2.8.5)
+-  JSON-basierte Validierung (in server.js und doors.json)
+
+  
+
+
+
+
+# 🟢 UNBEDENKLICH für Firmennutzung:
+Alle verwendeten Technologien sind Open Source:
+
+React - MIT License ✅
+Three.js - MIT License ✅
+Vite - MIT License ✅
+Node.js - MIT License ✅
+Express - MIT License ✅
+@react-three/fiber - MIT License ✅
+📋 WAS SIE BEACHTEN MÜSSEN:
+✅ ERLAUBT:
+
+Kommerzielle Nutzung
+Verkauf als Produkt/Service
+Kundenaufträge
+SaaS-Anwendungen
+White-Label-Lösungen
+⚠️ EMPFOHLENE MASSNAHMEN:
+
+License-Datei erstellen mit allen verwendeten Libraries
+Copyright-Hinweise in der App
+Eigene Nutzungsbedingungen für Kunden
+Datenschutzerklärung (DSGVO-konform)
+💰 BUSINESS-MODEL Optionen:
+Lizenzverkauf an Türenhersteller
+SaaS-Lösung (monatliche Gebühr)
+White-Label für Handwerker/Händler
+Individuelle Anpassungen als Service
+
+
+## 📄 Lizenz
+
+MIT License - siehe [LICENSE](LICENSE) für Details.
+
+
+
+
 
 ## 💻 Alternative Backend-Implementierung (Pascal/C#)
 
